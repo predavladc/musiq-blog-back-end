@@ -53,7 +53,7 @@ blogRouter.post("/newarticle", (req, res) => {
   database
     .query(newArticle)
     .then((data) => res.send(data.rows))
-    .catch(() => res.status(500).send());
+    .catch((error) => res.status(500).send(error.message));
 });
 
 module.exports = blogRouter;
