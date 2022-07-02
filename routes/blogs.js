@@ -5,14 +5,14 @@ const database = require("../database/client");
 blogRouter.get("/time", (req, res) => {
   database
     .query("SELECT NOW()")
-    .then((data) => res.send(data.rows[0].now))
+    .then((data) => res.json(data.rows[0].now))
     .catch(() => res.status(500).send());
 });
 
 blogRouter.get("/", (req, res) => {
   // res.send("here are blogs");
   database
-    .query("SELECT * FROM article")
+    .query("SELECT * FROM article ORDER BY id ASC")
     .then((data) => res.send(data.rows))
     .catch(() => res.status(500).send());
 });
