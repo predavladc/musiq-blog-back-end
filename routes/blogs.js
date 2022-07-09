@@ -12,9 +12,23 @@ blogRouter.get("/time", (req, res) => {
 blogRouter.get("/", (req, res) => {
   // res.send("here are blogs");
   database
-    .query("SELECT * FROM article ORDER BY id ASC")
+    .query(
+      `SELECT
+    ar.id AS article_id,
+    ar.title,
+    ar.hero_img,
+    ar.summary,
+    ar.description,
+    ar.created_at,
+    au.id AS author_id,
+    au.name
+  FROM article ar
+  JOIN author au
+  ON ar.author_id = au.id 
+  ORDER BY ar.id ASC`
+    )
     .then((data) => res.send(data.rows))
-    .catch(() => res.status(500).send());
+    .catch((err) => res.status(500).send(err.message));
 });
 blogRouter.get("/:id", (req, res) => {
   // res.send("here are blogs");
@@ -39,8 +53,11 @@ blogRouter.get("/:id", (req, res) => {
   };
   database
     .query(queryStr)
-    .then((data) => res.send(data.rows))
-    .catch((e) => res.status(500).send(e.message));
+    .then((data) => res.json(data.rows))
+    .catch((e) => {
+      console.log(e);
+      res.status(500).send(e.message);
+    });
 });
 
 blogRouter.get("/style/:style", (req, res) => {
