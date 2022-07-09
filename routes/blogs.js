@@ -43,6 +43,33 @@ blogRouter.get("/:id", (req, res) => {
     .catch((e) => res.status(500).send(e.message));
 });
 
+blogRouter.get("/style/:style", (req, res) => {
+  const { style } = req.params;
+
+  const queryStr = {
+    text: `
+      SELECT
+        ar.id AS article_id,
+        ar.title,
+        ar.hero_img,
+        ar.summary,
+        ar.description,
+        ar.created_at,
+        au.id AS author_id,
+        au.name
+      FROM article ar
+      JOIN author au
+      ON ar.author_id = au.id
+      WHERE ar.style=$1
+      `,
+    values: [style],
+  };
+  database
+    .query(queryStr)
+    .then((data) => res.send(data.rows))
+    .catch((e) => res.status(500).send(e.message));
+});
+
 blogRouter.post("/newarticle", (req, res) => {
   const { title, hero_img, summary, description, author_id } = req.body;
   const newArticle = {

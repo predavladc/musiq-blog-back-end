@@ -17,6 +17,31 @@ authorRouter.get("/", (req, res) => {
   // res.send("here are authors");
 });
 
+authorRouter.get("/:auth_id", (req, res) => {
+  const { auth_id } = req.params;
+  const querySrt = {
+    text: `
+    SELECT
+      ar.id AS article_id,
+      ar.title,
+      ar.hero_img,
+      ar.summary,
+      ar.description,
+      ar.created_at,
+      au.id AS author_id,
+      au.name
+    FROM article ar
+    JOIN author au
+    ON ar.author_id = au.id
+    WHERE au.id = $1`,
+    values: [auth_id],
+  };
+  database
+    .query(querySrt)
+    .then((data) => res.send(data.rows))
+    .catch((e) => res.status(500).send(e.message));
+});
+
 authorRouter.post("/newauthor", (req, res) => {
   const { name, avatar, email } = req.body;
   const newAuthor = {
