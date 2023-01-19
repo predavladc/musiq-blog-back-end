@@ -30,6 +30,7 @@ blogRouter.get("/", (req, res) => {
     .then((data) => res.send(data.rows))
     .catch((err) => res.status(500).send(err.message));
 });
+
 blogRouter.get("/:id", (req, res) => {
   // res.send("here are blogs");
   const { id } = req.params;
